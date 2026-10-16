@@ -49,7 +49,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -85,7 +85,7 @@ fun HomeScreen(
     val listEpoch by remember(limitApp) {
         limitApp?.listEpoch ?: MutableStateFlow(0)
     }.collectAsStateWithLifecycle()
-    var permissionTick by remember { mutableStateOf(0) }
+    var permissionTick by remember { mutableIntStateOf(0) }
 
     // Re-check system permissions every time we return to the screen
     // (e.g. back from Settings).

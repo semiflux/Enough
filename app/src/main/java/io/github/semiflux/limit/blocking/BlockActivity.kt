@@ -2,7 +2,6 @@ package io.github.semiflux.limit.blocking
 
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -29,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import java.util.Collections
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -89,7 +89,7 @@ class BlockActivity : ComponentActivity() {
     companion object {
         const val EXTRA_PACKAGE = "blocked_package"
         private const val TAG = "Enough"
-        private val showing = mutableSetOf<String>()
+        private val showing = Collections.synchronizedSet(mutableSetOf<String>())
 
         fun isShowing(packageName: String): Boolean = synchronized(showing) {
             showing.contains(packageName)

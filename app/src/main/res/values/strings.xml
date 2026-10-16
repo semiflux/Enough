@@ -5,6 +5,4 @@
     <string name="monitor_text">Enough checks blocked apps in the background.</string>
     <string name="block_notif_text">Enough — tap to view.</string>
     <string name="reminder_notif_text">5 minutes left today.</string>
-    <string name="fsi_title">Popups need one more toggle</string>
-    <string name="fsi_text">Android lets you switch off automatic full-screen popups per app. With it off you only get the notification and have to tap it. Turn it on for Enough.</string>
 </resources>
