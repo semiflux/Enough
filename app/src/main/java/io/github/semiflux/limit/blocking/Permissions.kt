@@ -4,10 +4,10 @@ import android.accessibilityservice.AccessibilityService
 import android.app.AppOpsManager
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.PowerManager
 import android.os.Process
 import android.provider.Settings
+import androidx.core.net.toUri
 
 /** System-integration helpers: usage access, overlay, accessibility, battery. */
 object Permissions {
@@ -31,7 +31,7 @@ object Permissions {
     fun hasOverlay(context: Context): Boolean = Settings.canDrawOverlays(context)
 
     fun overlayIntent(packageName: String): Intent =
-        Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName")).apply {
+        Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, "package:$packageName".toUri()).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
 
