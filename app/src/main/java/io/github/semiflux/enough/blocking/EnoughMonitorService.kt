@@ -75,8 +75,8 @@ class EnoughMonitorService : LifecycleService() {
     override fun onCreate() {
         super.onCreate()
         startForegroundNotification()
-        // Diagnostic only: records whether the OS observer API Digital
-        // Wellbeing enforces with exists on this device. Enforcement
+        // Diagnostic only: records whether the OS observer API the system
+        // usage app enforces with exists on this device. Enforcement
         // stays on polling until a device proves otherwise (see docs).
         Log.d("Enough", "observerApiPresent=" + runCatching {
             EnoughServiceLocator.appOrNull(this)?.usage?.observerApiPresent()

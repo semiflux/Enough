@@ -35,9 +35,10 @@ class UsageRepository(private val context: Context) {
 
         /**
          * Event queries are issued in windows of at most this size.
-         * Digital Wellbeing chunks long ranges the same way (1h): each
-         * query holds a bounded cursor instead of one giant scan, and
-         * the concatenated marks stay chronological for [integrate].
+         * The system's own usage tooling chunks long ranges the same way
+         * (1h): each query holds a bounded cursor instead of one giant
+         * scan, and the concatenated marks stay chronological for
+         * [integrate].
          */
         const val QUERY_CHUNK_MS = 3_600_000L
 
@@ -160,8 +161,8 @@ class UsageRepository(private val context: Context) {
         if (start >= end) return emptyMap()
         val marks = ArrayList<ForegroundMark>(512)
         val event = UsageEvents.Event()
-        // Chunked like Android's own usage tooling: bounded
-        // cursors per query, chronological marks across chunks.
+        // Chunked to bound each cursor: shorter queries per chunk,
+        // chronological marks across the concatenation.
         var chunkStart = queryStartForDay(start)
         while (chunkStart < end) {
             val chunkEnd = minOf(chunkStart + QUERY_CHUNK_MS, end)
@@ -190,8 +191,8 @@ class UsageRepository(private val context: Context) {
     }
 
     /**
-     * Whether the OS app-usage observer API (the mechanism Digital
-     * Wellbeing enforces with) exists at runtime. It is hidden from the
+     * Whether the OS app-usage observer API (the mechanism the system
+     * usage app enforces with) exists at runtime. It is hidden from the
      * public SDK stubs, so this is probed by reflection; probing only
      * looks the method up, never invokes it. False = keep polling.
      * Cached: the framework doesn't change under a running process.

@@ -28,9 +28,9 @@ from the system's pre-aggregated daily buckets.
   - Per-package intervals are unioned before summing, so duplicated,
     nested, or reordered system events never double-count.
   - Our own package is excluded.
-- Event queries are **chunked in 1-hour windows** (same as Digital
-  Wellbeing's event loader): bounded cursors per query,
-  chronological marks across chunks, identical totals.
+- Event queries are **chunked in 1-hour windows** (the same way Android's
+  own usage tooling does it): bounded cursors per query, chronological
+  marks across chunks, identical totals.
 - Results are cached 30s (`CACHE_TTL_MS`), keyed on day-start. Quota
   decisions are minute-granular, so worst-case enforcement lag is ~30s.
   Schedule blocking (the 2s poll path) never touches this map.
@@ -59,41 +59,44 @@ Observed symptom before the fix: counters reset around ~17:xx instead of
 midnight, looking random. That was the bucket edge passing, not our day
 logic (day numbering, zones, and bounds were all verified correct first).
 
-## What the references do
+## What other limiters do
 
-Established by inspecting the installed apps (Sept 2026); package/class names below
-come from inspecting those apps.
+Notes from studying publicly released versions of these apps (September
+2026) as design references, to understand how usage accounting and
+enforcement are done on this platform. No code, assets or binaries from any
+of them are used or shipped here: mechanisms we adopted were reimplemented
+against the public Android APIs.
 
 **Digital Wellbeing** (Google):
-- Its accounting: `queryEvents` only — zero `queryUsageStats` /
-  `getTotalTimeInForeground` calls in the whole APK. Filtered event types on
+- Accounting comes from `queryEvents` alone: no `queryUsageStats` /
+  `getTotalTimeInForeground` totals anywhere. Filtered event types on
   API 35+, 1h-chunked queries, task-root + `instanceId` attribution.
-- Day = local-zone timestamps; start-of-today /
-  start-of-tomorrow bounds, a midnight alarm, re-register
-  on `TIMEZONE_CHANGED`/`TIME_SET`/`BOOT_COMPLETED`, and a 10s snap of "now"
-  across midnight to avoid straddle races.
+- Day bounds come from the system zone: start-of-today / start-of-tomorrow,
+  a midnight alarm, re-registration on `TIMEZONE_CHANGED` / `TIME_SET` /
+  `BOOT_COMPLETED`, and a 10s snap of "now" across midnight to avoid
+  straddle races.
 - Enforcement is **delegated to the OS**: `registerAppUsageLimitObserver()`
-  (system tracks limit vs used, fires broadcast), falling back to
+  (system tracks limit vs used, fires a broadcast), falling back to
   `registerAppUsageObserver(remaining + 5s grace, 1min floor)`. Warning
   observers at 5-min and 1-min remaining. Blocking itself uses
   `SUSPEND_APPS` — real suspension, no overlay race.
-- Permissions we can't have: `OBSERVE_APP_USAGE`, `SUSPEND_APPS`,
+- Permissions it holds that we can't: `OBSERVE_APP_USAGE`, `SUSPEND_APPS`,
   `START_ACTIVITIES_FROM_BACKGROUND`, `SYSTEM_APPLICATION_OVERLAY`.
 
 **AppBlock**:
-- Own session parsing from raw events
-  (foreground/background, screen on/off, shutdown/startup, unlock debounce,
-  >12h sessions discarded), persisted into its own DataStore with a
-  sync watermark; each sync processes only new events.
-- "Today" = `LocalDate.now().atStartOfDay(systemDefault)` → +86399s.
+- Own session parsing from raw events (foreground/background, screen on/off,
+  shutdown/startup, unlock debounce, >12h sessions discarded), persisted in
+  its own store behind a sync watermark, so each sync processes only new
+  events.
+- "Today" = `LocalDate.now().atStartOfDay(systemDefault)`, plus 86399s.
 - Enforcement keeps per-limit counters with lazy reset at period start,
   where the daily period starts at a user-configurable **day beginning
   hour** (so a 1am session doesn't get a fresh quota at midnight).
-- `queryUsageStats` buckets are used only for a "rough" fallback when event
-  history is missing. Clock-tamper resistance via an adjusted clock
+- `queryUsageStats` buckets are only a "rough" fallback when event history is
+  missing. Clock-tamper resistance via an adjusted clock
   (`currentTime − elapsedRealtime` delta).
 
-**ScreenTime** (Atharok, open source, `ScreenTime/data/statsTracker/UsageStatsTracker.kt`):
+**ScreenTime** (Atharok, GPL, public source — `UsageStatsTracker.kt`):
 - Same events-based integration, same local-midnight `Calendar`
   truncation, single (unchunked) `queryEvents` per range.
 - Pairs resume/pause **per activity class** (`event.className ?: package`),
