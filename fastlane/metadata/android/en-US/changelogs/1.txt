@@ -1,0 +1,6 @@
+First release.
+
+Daily per-app quotas, with a reminder five minutes before the limit.
+Blocked hours, set per weekday. Quotas and windows can be combined, and a
+window wins over a quota. Blacklist model: only the apps you add are
+affected.

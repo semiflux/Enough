@@ -1,0 +1,35 @@
+Enough is a per-app screen time limiter. Give an app a daily quota, blocked
+hours, or both, and Enough steps in when the limit is reached. Apps you did
+not add are never touched.
+
+<b>Limits</b>
+Daily quota, for example 25 minutes of Instagram a day, counted from
+midnight in your own timezone. A notification reminds you five minutes
+before the quota runs out.
+
+Blocked hours, for example no YouTube from 07:00 to 12:00 on weekdays.
+Windows are set per weekday. When a quota and a window overlap, the window
+wins.
+
+While an app is blocked you get a full screen notice with a Close button,
+and a notification.
+
+<b>How it counts</b>
+Usage is integrated from raw UsageEvents, clipped to local midnight, with
+per-activity resume and pause events paired up. It does not use Android's
+daily usage buckets, which are rolling 24 hour windows, so the number does
+not jump when the system resets them.
+
+<b>How blocking is enforced</b>
+A foreground service watches the foreground app while the screen is on. If
+you also enable the accessibility service, blocking is driven by
+accessibility events and happens immediately instead of on the next check.
+Android exposes no way for a normal app to observe app usage, so the check
+is a poll.
+
+<b>What it does not do</b>
+No usage history or statistics, no website blocking, no accounts, no
+telemetry. The app declares no INTERNET permission.
+
+Requires Android 12 or newer. GPL-3.0 licensed, source at
+https://github.com/semiflux/Enough
