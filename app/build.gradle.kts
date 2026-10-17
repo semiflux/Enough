@@ -7,13 +7,13 @@ plugins {
 import java.util.Properties
 
 android {
-    namespace = "io.github.semiflux.limit"
+    namespace = "io.github.semiflux.enough"
     compileSdk {
         version = release(37)
     }
 
     defaultConfig {
-        applicationId = "io.github.semiflux.limit"
+        applicationId = "io.github.semiflux.enough"
         minSdk = 31
         targetSdk = 37
         versionCode = 1
