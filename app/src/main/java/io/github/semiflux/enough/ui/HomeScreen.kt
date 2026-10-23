@@ -57,6 +57,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
@@ -64,6 +65,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.MutableStateFlow
+import io.github.semiflux.enough.R
 import io.github.semiflux.enough.blocking.BlockEvaluator
 import io.github.semiflux.enough.blocking.BlockReason
 import io.github.semiflux.enough.blocking.Blocker
@@ -126,11 +128,11 @@ fun HomeScreen(
     val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text("Enough") }) },
+        topBar = { TopAppBar(title = { Text(stringResource(R.string.app_name)) }) },
         snackbarHost = { SnackbarHost(snackbarHostState) },
         floatingActionButton = {
             ExtendedFloatingActionButton(
-                text = { Text("Add limit") },
+                text = { Text(stringResource(R.string.action_add_limit)) },
                 icon = { Icon(Icons.Filled.Add, contentDescription = null) },
                 onClick = onAdd
             )
@@ -143,9 +145,9 @@ fun HomeScreen(
             if (!hasUsage) {
                 item {
                     PermissionCard(
-                        title = "See app usage",
-                        text = "Enough needs usage access to measure screen time.",
-                        action = "Allow",
+                        title = stringResource(R.string.perm_usage_title),
+                        text = stringResource(R.string.perm_usage_text),
+                        action = stringResource(R.string.action_allow),
                         onAction = {
                             context.startActivity(Permissions.usageAccessIntent())
                         }
@@ -155,9 +157,9 @@ fun HomeScreen(
             if (!hasNotifications && Build.VERSION.SDK_INT >= 33) {
                 item {
                     PermissionCard(
-                        title = "Show when a limit hits",
-                        text = "Notifications let Enough pull up the block screen reliably.",
-                        action = "Allow",
+                        title = stringResource(R.string.perm_notif_title),
+                        text = stringResource(R.string.perm_notif_text),
+                        action = stringResource(R.string.action_allow),
                         onAction = {
                             notifLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                         }
@@ -167,9 +169,9 @@ fun HomeScreen(
             if (hasUsage && !accessibilityOn) {
                 item {
                     PermissionCard(
-                        title = "Instant blocking (optional)",
-                        text = "Enable the accessibility service for immediate blocking. Otherwise checks run every couple of seconds.",
-                        action = "Open settings",
+                        title = stringResource(R.string.perm_accessibility_title),
+                        text = stringResource(R.string.perm_accessibility_text),
+                        action = stringResource(R.string.action_open_settings),
                         onAction = {
                             context.startActivity(Permissions.accessibilityIntent())
                         }
@@ -179,9 +181,9 @@ fun HomeScreen(
             if (hasUsage && !ignoringBattery) {
                 item {
                     PermissionCard(
-                        title = "Stay running (recommended)",
-                        text = "Exempt Enough from battery optimization so the background check isn't killed on some phones.",
-                        action = "Open settings",
+                        title = stringResource(R.string.perm_battery_title),
+                        text = stringResource(R.string.perm_battery_text),
+                        action = stringResource(R.string.action_open_settings),
                         onAction = {
                             context.startActivity(Permissions.batterySettingsIntent())
                         }
@@ -191,9 +193,9 @@ fun HomeScreen(
             if (hasUsage && hasNotifications && !canFullScreen) {
                 item {
                     PermissionCard(
-                        title = "Popups need one more toggle",
-                        text = "Android lets you switch off automatic full-screen popups per app. With it off you only get the notification and have to tap it. Turn it on for Enough.",
-                        action = "Open settings",
+                        title = stringResource(R.string.perm_fullscreen_title),
+                        text = stringResource(R.string.perm_fullscreen_text),
+                        action = stringResource(R.string.action_open_settings),
                         onAction = {
                             runCatching {
                                 context.startActivity(Blocker.fullScreenSettingsIntent())
@@ -205,9 +207,9 @@ fun HomeScreen(
             if (hasUsage && !hasOverlay) {
                 item {
                     PermissionCard(
-                        title = "Display over other apps",
-                        text = "Lets Enough pop up the block screen by itself. Without it you only get a notification to tap.",
-                        action = "Allow",
+                        title = stringResource(R.string.perm_overlay_title),
+                        text = stringResource(R.string.perm_overlay_text),
+                        action = stringResource(R.string.action_allow),
                         onAction = {
                             runCatching {
                                 context.startActivity(
@@ -234,6 +236,8 @@ fun HomeScreen(
                 // a second time.
                 key(row.rule.packageName, listEpoch) {
                 val reason = BlockEvaluator.evaluate(row.rule, row.usedMillis, ZonedDateTime.now())
+                val removedMessage = stringResource(R.string.snackbar_limit_removed, row.label)
+                val undoLabel = stringResource(R.string.action_undo)
                 val dismissState = rememberSwipeToDismissBoxState()
                 SwipeToDismissBox(
                     state = dismissState,
@@ -243,8 +247,8 @@ fun HomeScreen(
                         viewModel.removeRule(row.rule.packageName)
                         scope.launch {
                             val result = snackbarHostState.showSnackbar(
-                                message = "${row.label} limit removed",
-                                actionLabel = "Undo"
+                                message = removedMessage,
+                                actionLabel = undoLabel
                             )
                             if (result == SnackbarResult.ActionPerformed) {
                                 viewModel.restoreRule(row.rule)
@@ -266,7 +270,7 @@ fun HomeScreen(
                         ) {
                             Icon(
                                 Icons.Filled.Delete,
-                                contentDescription = "Delete",
+                                contentDescription = stringResource(R.string.action_delete),
                                 tint = if (deleting) MaterialTheme.colorScheme.onErrorContainer
                                 else MaterialTheme.colorScheme.surface
                             )
@@ -321,11 +325,11 @@ private fun EmptyState(hasUsage: Boolean) {
             tint = MaterialTheme.colorScheme.primary
         )
         Spacer(Modifier.height(16.dp))
-        Text("No limits yet", style = MaterialTheme.typography.titleMedium)
+        Text(stringResource(R.string.empty_title), style = MaterialTheme.typography.titleMedium)
         Spacer(Modifier.height(4.dp))
         Text(
-            if (hasUsage) "Tap Add limit and pick an app."
-            else "Allow usage access, then add your first limit.",
+            if (hasUsage) stringResource(R.string.empty_body)
+            else stringResource(R.string.empty_body_usage),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -370,19 +374,25 @@ private fun HomeRowItem(
     } else null
 
     val quotaLine: Pair<String, Boolean> = when {
-        reason is BlockReason.Quota -> "Limit reached" to true
+        reason is BlockReason.Quota -> stringResource(R.string.status_limit_reached) to true
         limit != null && quotaToday && quotaOn -> {
             val left = BlockEvaluator.remainingMillis(usedMillis, limit) ?: 0L
-            "${BlockEvaluator.formatDuration(left)} left of ${BlockEvaluator.formatDuration(limit * 60_000L)}" to false
+            stringResource(
+                R.string.status_remaining_of,
+                durationLabel(left),
+                durationLabel(limit * 60_000L)
+            ) to false
         }
         // No active quota (off, off-day, or never set): usage against no cap.
-        else -> "${BlockEvaluator.formatDuration(usedMillis)} / ∞" to false
+        else -> stringResource(
+            R.string.status_used_unlimited, durationLabel(usedMillis)
+        ) to false
     }
 
     val scheduleLine: Pair<String, Boolean>? = when {
         reason is BlockReason.Schedule ->
-            "Blocked ${BlockEvaluator.formatWindow(reason.window)}" to true
-        rule.windows.any { it.enabled } -> "Not blocked" to false
+            stringResource(R.string.status_blocked_window, windowLabel(reason.window)) to true
+        rule.windows.any { it.enabled } -> stringResource(R.string.status_not_blocked) to false
         else -> null
     }
 
@@ -393,7 +403,7 @@ private fun HomeRowItem(
                 if (!rule.enabled) {
                     StatusLine(
                         icon = Icons.Filled.PauseCircle,
-                        text = "Paused",
+                        text = stringResource(R.string.status_paused),
                         alert = true
                     )
                 } else {

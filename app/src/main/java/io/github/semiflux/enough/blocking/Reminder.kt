@@ -25,7 +25,7 @@ object Reminder {
         nm.createNotificationChannel(
             NotificationChannel(
                 CHANNEL_REMINDER,
-                "Reminders",
+                context.getString(R.string.channel_reminder_name),
                 NotificationManager.IMPORTANCE_DEFAULT
             )
         )

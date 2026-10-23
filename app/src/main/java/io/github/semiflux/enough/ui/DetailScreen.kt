@@ -44,16 +44,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import io.github.semiflux.enough.blocking.BlockEvaluator
+import io.github.semiflux.enough.R
 import io.github.semiflux.enough.blocking.EnoughApp
 import io.github.semiflux.enough.data.AllDays
 import io.github.semiflux.enough.data.BlockWindow
 import io.github.semiflux.enough.ui.theme.EnoughTheme
+import java.time.DayOfWeek
+import java.time.format.TextStyle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -80,15 +84,21 @@ fun DetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("App limit") },
+                title = { Text(stringResource(R.string.title_app_limit)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.action_back)
+                        )
                     }
                 },
                 actions = {
                     IconButton(onClick = { confirmDelete = true }) {
-                        Icon(Icons.Outlined.Delete, contentDescription = "Remove limit")
+                        Icon(
+                            Icons.Outlined.Delete,
+                            contentDescription = stringResource(R.string.action_remove_limit)
+                        )
                     }
                 }
             )
@@ -118,7 +128,10 @@ fun DetailScreen(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(Icons.Outlined.HourglassEmpty, contentDescription = null)
                             Spacer(Modifier.width(8.dp))
-                            Text("Daily limit", style = MaterialTheme.typography.titleSmall)
+                            Text(
+                                stringResource(R.string.label_daily_limit),
+                                style = MaterialTheme.typography.titleSmall
+                            )
                             Spacer(Modifier.weight(1f))
                             Switch(
                                 checked = limit != null && (current?.dailyLimitEnabled ?: true),
@@ -130,8 +143,11 @@ fun DetailScreen(
                         if (limit != null) {
                             Spacer(Modifier.height(4.dp))
                             Text(
-                                "${BlockEvaluator.formatDuration(limit * 60_000L)} per day · " +
-                                    "${BlockEvaluator.formatDuration(used)} used",
+                                stringResource(
+                                    R.string.daily_limit_summary,
+                                    durationLabel(limit * 60_000L),
+                                    durationLabel(used)
+                                ),
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -151,7 +167,7 @@ fun DetailScreen(
                             )
                         } else {
                             Text(
-                                "No daily quota — use blocked times below, or none at all.",
+                                stringResource(R.string.daily_limit_none),
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -164,11 +180,14 @@ fun DetailScreen(
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(Icons.Filled.Schedule, contentDescription = null)
                             Spacer(Modifier.width(8.dp))
-                            Text("Blocked times", style = MaterialTheme.typography.titleSmall)
+                            Text(
+                                stringResource(R.string.label_blocked_times),
+                                style = MaterialTheme.typography.titleSmall
+                            )
                         }
                         Spacer(Modifier.height(4.dp))
                         Text(
-                            "No usage inside these windows.",
+                            stringResource(R.string.blocked_times_hint),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -176,7 +195,10 @@ fun DetailScreen(
                         val windows = rule?.windows.orEmpty()
                         if (windows.isEmpty()) {
                             Text(
-                                "None — e.g. add 9:00–17:00.",
+                                stringResource(
+                                    R.string.blocked_times_none,
+                                    windowLabel(BlockWindow(startMinute = 9 * 60, endMinute = 17 * 60))
+                                ),
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -198,7 +220,7 @@ fun DetailScreen(
                             editingWindow = null
                             showWindowEditor = true
                         }) {
-                            Text("Add blocked time")
+                            Text(stringResource(R.string.action_add_blocked_time))
                         }
                 }
             }
@@ -234,13 +256,17 @@ fun DetailScreen(
     if (confirmDelete) {
         AlertDialog(
             onDismissRequest = { confirmDelete = false },
-            title = { Text("Remove limit?") },
-            text = { Text("$label will be unrestricted again.") },
+            title = { Text(stringResource(R.string.confirm_remove_title)) },
+            text = { Text(stringResource(R.string.confirm_remove_text, label)) },
             confirmButton = {
-                TextButton(onClick = { viewModel.delete(onBack) }) { Text("Remove") }
+                TextButton(onClick = { viewModel.delete(onBack) }) {
+                    Text(stringResource(R.string.action_remove))
+                }
             },
             dismissButton = {
-                TextButton(onClick = { confirmDelete = false }) { Text("Cancel") }
+                TextButton(onClick = { confirmDelete = false }) {
+                    Text(stringResource(R.string.action_cancel))
+                }
             }
         )
     }
@@ -268,20 +294,17 @@ private fun DayChip(
     )
 }
 
-private val DayLabels = listOf(
-    1 to "M", 2 to "T", 3 to "W", 4 to "T", 5 to "F", 6 to "S", 7 to "S"
-)
-
-/** All seven days, strictly in a single row. */
+/** All seven days, strictly in a single row, named by the current locale. */
 @Composable
 private fun DayChipsRow(selected: Set<Int>, onToggle: (Int) -> Unit) {
+    val locale = LocalConfiguration.current.locales[0]
     Row(
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
-        DayLabels.forEach { (value, label) ->
+        (1..7).forEach { value ->
             DayChip(
-                label = label,
+                label = DayOfWeek.of(value).getDisplayName(TextStyle.NARROW, locale),
                 selected = value in selected,
                 onToggle = { onToggle(value) },
                 modifier = Modifier.weight(1f)
@@ -304,16 +327,22 @@ private fun WindowRow(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                BlockEvaluator.formatWindow(window),
+                windowLabel(window),
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.weight(1f)
             )
             Switch(checked = window.enabled, onCheckedChange = onToggleEnabled)
             IconButton(onClick = onEdit) {
-                Icon(Icons.Outlined.Edit, contentDescription = "Edit blocked time")
+                Icon(
+                    Icons.Outlined.Edit,
+                    contentDescription = stringResource(R.string.action_edit_blocked_time)
+                )
             }
             IconButton(onClick = onDelete) {
-                Icon(Icons.Outlined.Delete, contentDescription = "Remove blocked time")
+                Icon(
+                    Icons.Outlined.Delete,
+                    contentDescription = stringResource(R.string.action_remove_blocked_time)
+                )
             }
         }
         Spacer(Modifier.height(4.dp))
@@ -342,7 +371,10 @@ private fun WindowEditorDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text(if (step == 0) "Block from" else "Block until")
+            Text(
+                if (step == 0) stringResource(R.string.window_block_from)
+                else stringResource(R.string.window_block_until)
+            )
         },
         text = {
             Column {
@@ -360,10 +392,17 @@ private fun WindowEditorDialog(
                         if (end != start) onSave(start, end)
                     }
                 }
-            ) { Text(if (step == 0) "Next" else "Save") }
+            ) {
+                Text(
+                    if (step == 0) stringResource(R.string.action_next)
+                    else stringResource(R.string.action_save)
+                )
+            }
         },
         dismissButton = {
-            TextButton(onClick = { if (step == 0) onDismiss() else step-- }) { Text("Back") }
+            TextButton(onClick = { if (step == 0) onDismiss() else step-- }) {
+                Text(stringResource(R.string.action_back))
+            }
         }
     )
 }

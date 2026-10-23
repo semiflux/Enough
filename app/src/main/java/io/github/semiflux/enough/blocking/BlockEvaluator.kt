@@ -87,36 +87,4 @@ object BlockEvaluator {
         if (dailyLimitMinutes == null) return null
         return (dailyLimitMinutes * 60_000L - usedMillis).coerceAtLeast(0L)
     }
-
-    // -- formatting helpers for the minimal UI --
-
-    fun formatDuration(millis: Long): String {
-        val totalMin = millis / 60_000L
-        val h = totalMin / 60
-        val m = totalMin % 60
-        return when {
-            h > 0 && m > 0 -> "${h}h ${m}m"
-            h > 0 -> "${h}h"
-            else -> "${m}m"
-        }
-    }
-
-    fun formatMinuteOfDay(minute: Int): String {
-        val h = (minute / 60).coerceIn(0, 23)
-        val m = (minute % 60).coerceIn(0, 59)
-        return "%d:%02d".format(h, m)
-    }
-
-    fun formatWindow(window: BlockWindow): String =
-        "${formatMinuteOfDay(window.startMinute)}–${formatMinuteOfDay(window.endMinute)}"
-
-    fun formatDays(days: Set<Int>): String {
-        if (days.isEmpty()) return "Every day"
-        val names = mapOf(1 to "Mon", 2 to "Tue", 3 to "Wed", 4 to "Thu", 5 to "Fri", 6 to "Sat", 7 to "Sun")
-        val sorted = days.sorted()
-        if (sorted == listOf(1, 2, 3, 4, 5, 6, 7)) return "Every day"
-        if (sorted == listOf(1, 2, 3, 4, 5)) return "Weekdays"
-        if (sorted == listOf(6, 7)) return "Weekends"
-        return sorted.mapNotNull { names[it] }.joinToString(" ")
-    }
 }

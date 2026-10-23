@@ -175,7 +175,11 @@ class EnoughMonitorService : LifecycleService() {
         val channelId = CHANNEL_ID
         val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         nm.createNotificationChannel(
-            NotificationChannel(channelId, "Enough monitor", NotificationManager.IMPORTANCE_MIN)
+            NotificationChannel(
+                channelId,
+                getString(R.string.channel_monitor_name),
+                NotificationManager.IMPORTANCE_MIN
+            )
         )
         val open = PendingIntent.getActivity(
             this, 0, Intent(this, MainActivity::class.java),

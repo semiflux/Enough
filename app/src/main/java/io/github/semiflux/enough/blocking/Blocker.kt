@@ -9,6 +9,7 @@ import android.os.Build
 import android.provider.Settings
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import io.github.semiflux.enough.R
 
 /**
  * Central block trigger.
@@ -84,7 +85,7 @@ object Blocker {
         nm.createNotificationChannel(
             NotificationChannel(
                 CHANNEL_BLOCK,
-                "App limits",
+                context.getString(R.string.channel_block_name),
                 NotificationManager.IMPORTANCE_HIGH
             )
         )
@@ -101,7 +102,7 @@ object Blocker {
         val notification = NotificationCompat.Builder(context, CHANNEL_BLOCK)
             .setSmallIcon(android.R.drawable.ic_lock_idle_lock)
             .setContentTitle(label)
-            .setContentText(context.getString(io.github.semiflux.enough.R.string.block_notif_text))
+            .setContentText(context.getString(R.string.block_notif_text))
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setContentIntent(fullScreenPending)

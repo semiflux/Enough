@@ -26,8 +26,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.github.semiflux.enough.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,10 +45,13 @@ fun PickerScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Choose app") },
+                title = { Text(stringResource(R.string.title_choose_app)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.action_back)
+                        )
                     }
                 }
             )
@@ -57,7 +62,7 @@ fun PickerScreen(
                 value = query,
                 onValueChange = viewModel::setQuery,
                 leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
-                placeholder = { Text("Search apps") },
+                placeholder = { Text(stringResource(R.string.search_apps)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )

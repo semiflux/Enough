@@ -58,15 +58,6 @@ class BlockEvaluatorTest {
     }
 
     @Test
-    fun formatDaysVariants() {
-        assertEquals("Every day", BlockEvaluator.formatDays(emptySet()))
-        assertEquals("Every day", BlockEvaluator.formatDays((1..7).toSet()))
-        assertEquals("Weekdays", BlockEvaluator.formatDays(setOf(1, 2, 3, 4, 5)))
-        assertEquals("Weekends", BlockEvaluator.formatDays(setOf(6, 7)))
-        assertEquals("Mon Wed Fri", BlockEvaluator.formatDays(setOf(1, 3, 5)))
-    }
-
-    @Test
     fun scheduleBlocksInsideWindow() {
         val rule = AppRule(
             packageName = "com.example",
@@ -168,10 +159,8 @@ class BlockEvaluatorTest {
     }
 
     @Test
-    fun remainingAndFormatting() {
+    fun remainingNeverGoesNegative() {
         assertEquals(5 * 60_000L, BlockEvaluator.remainingMillis(10 * 60_000L, 15)!!)
-        assertEquals("15m", BlockEvaluator.formatDuration(15 * 60_000L))
-        assertEquals("1h 5m", BlockEvaluator.formatDuration(65 * 60_000L))
-        assertEquals("9:00–17:00", BlockEvaluator.formatWindow(BlockWindow(startMinute = 540, endMinute = 1020)))
+        assertEquals(0L, BlockEvaluator.remainingMillis(20 * 60_000L, 15)!!)
     }
 }

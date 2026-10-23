@@ -23,7 +23,9 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import io.github.semiflux.enough.R
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
@@ -69,7 +71,7 @@ fun DurationWheel(
         WheelColumn(
             value = hourSel,
             size = 24,
-            label = "hours",
+            label = stringResource(R.string.unit_hours),
             onChange = { hourSel = it; report(it, minSel) },
             modifier = Modifier.width(110.dp)
         )
@@ -77,7 +79,7 @@ fun DurationWheel(
             value = minSel,
             size = 60,
             step = 5,
-            label = "minutes",
+            label = stringResource(R.string.unit_minutes),
             onChange = { minSel = it; report(hourSel, it) },
             modifier = Modifier.width(110.dp)
         )

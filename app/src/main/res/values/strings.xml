@@ -1,8 +1,92 @@
 <resources>
     <string name="app_name">Enough</string>
+
+    <!-- Accessibility service -->
     <string name="accessibility_desc">Detects when a limited app is opened so Enough can block it immediately.</string>
+
+    <!-- Notifications -->
     <string name="monitor_title">Watching app limits</string>
     <string name="monitor_text">Enough checks blocked apps in the background.</string>
     <string name="block_notif_text">Enough — tap to view.</string>
     <string name="reminder_notif_text">5 minutes left today.</string>
+    <string name="channel_monitor_name">Enough monitor</string>
+    <string name="channel_block_name">App limits</string>
+    <string name="channel_reminder_name">Reminders</string>
+
+    <!-- Titles -->
+    <string name="title_app_limit">App limit</string>
+    <string name="title_choose_app">Choose app</string>
+    <string name="search_apps">Search apps</string>
+
+    <!-- Actions -->
+    <string name="action_add_limit">Add limit</string>
+    <string name="action_allow">Allow</string>
+    <string name="action_open_settings">Open settings</string>
+    <string name="action_back">Back</string>
+    <string name="action_next">Next</string>
+    <string name="action_save">Save</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_undo">Undo</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_remove">Remove</string>
+    <string name="action_remove_limit">Remove limit</string>
+    <string name="action_add_blocked_time">Add blocked time</string>
+    <string name="action_edit_blocked_time">Edit blocked time</string>
+    <string name="action_remove_blocked_time">Remove blocked time</string>
+    <string name="action_close_app">Close app</string>
+
+    <!-- Permission cards -->
+    <string name="perm_usage_title">See app usage</string>
+    <string name="perm_usage_text">Enough needs usage access to measure screen time.</string>
+    <string name="perm_notif_title">Show when a limit hits</string>
+    <string name="perm_notif_text">Notifications let Enough pull up the block screen reliably.</string>
+    <string name="perm_accessibility_title">Instant blocking (optional)</string>
+    <string name="perm_accessibility_text">Enable the accessibility service for immediate blocking. Otherwise checks run every couple of seconds.</string>
+    <string name="perm_battery_title">Stay running (recommended)</string>
+    <string name="perm_battery_text">Exempt Enough from battery optimization so the background check isn\'t killed on some phones.</string>
+    <string name="perm_overlay_title">Display over other apps</string>
+    <string name="perm_overlay_text">Lets Enough pop up the block screen by itself. Without it you only get a notification to tap.</string>
+    <string name="perm_fullscreen_title">Popups need one more toggle</string>
+    <string name="perm_fullscreen_text">Android lets you switch off automatic full-screen popups per app. With it off you only get the notification and have to tap it. Turn it on for Enough.</string>
+
+    <!-- Empty state -->
+    <string name="empty_title">No limits yet</string>
+    <string name="empty_body">Tap Add limit and pick an app.</string>
+    <string name="empty_body_usage">Allow usage access, then add your first limit.</string>
+
+    <!-- Limit rows -->
+    <string name="status_paused">Paused</string>
+    <string name="status_limit_reached">Limit reached</string>
+    <string name="status_remaining_of">%1$s left of %2$s</string>
+    <string name="status_used_unlimited">%1$s / ∞</string>
+    <string name="status_blocked_window">Blocked %1$s</string>
+    <string name="status_not_blocked">Not blocked</string>
+    <string name="snackbar_limit_removed">%1$s limit removed</string>
+
+    <!-- App detail -->
+    <string name="label_daily_limit">Daily limit</string>
+    <string name="label_blocked_times">Blocked times</string>
+    <string name="blocked_times_hint">No usage inside these windows.</string>
+    <string name="blocked_times_none">None — e.g. add %1$s.</string>
+    <string name="daily_limit_summary">%1$s per day · %2$s used</string>
+    <string name="daily_limit_none">No daily quota — use blocked times below, or none at all.</string>
+    <string name="confirm_remove_title">Remove limit?</string>
+    <string name="confirm_remove_text">%1$s will be unrestricted again.</string>
+    <string name="window_block_from">Block from</string>
+    <string name="window_block_until">Block until</string>
+
+    <!-- Block screen -->
+    <string name="block_reason_schedule">Paused %1$s</string>
+    <string name="block_reason_quota">Daily limit reached</string>
+    <string name="block_reason_quota_limit">Daily limit reached · %1$d min/day</string>
+    <string name="block_reason_fallback">Limit reached</string>
+
+    <!-- Formatting -->
+    <string name="duration_hm">%1$dh %2$dm</string>
+    <string name="duration_h">%1$dh</string>
+    <string name="duration_m">%1$dm</string>
+    <string name="time_hm">%1$d:%2$02d</string>
+    <string name="window_range">%1$s–%2$s</string>
+    <string name="unit_hours">hours</string>
+    <string name="unit_minutes">minutes</string>
 </resources>

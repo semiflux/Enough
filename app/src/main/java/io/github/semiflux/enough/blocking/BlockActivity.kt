@@ -32,10 +32,13 @@ import java.util.Collections
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
+import io.github.semiflux.enough.R
 import io.github.semiflux.enough.ui.theme.EnoughTheme
+import io.github.semiflux.enough.ui.windowLabel
 import java.time.ZonedDateTime
 
 /**
@@ -115,19 +118,27 @@ private fun BlockScreen(
     val context = LocalContext.current
     val app = remember(context) { EnoughServiceLocator.appOrNull(context) }
     var label by remember { mutableStateOf(packageName) }
-    var reasonText by remember { mutableStateOf("") }
+    var reason by remember { mutableStateOf<BlockReason?>(null) }
+    var quotaMinutes by remember { mutableStateOf<Int?>(null) }
 
     LaunchedEffect(packageName) {
         label = app?.apps?.labelFor(packageName) ?: packageName
         val rule = app?.rulesSnapshot()?.firstOrNull { it.packageName == packageName }
         val used = app?.usage?.usageFor(packageName) ?: 0L
-        reasonText = when (val reason = rule?.let { BlockEvaluator.evaluate(it, used, ZonedDateTime.now()) }) {
-            is BlockReason.Schedule ->
-                "Paused ${BlockEvaluator.formatWindow(reason.window)}"
-            is BlockReason.Quota ->
-                "Daily limit reached" + (rule.dailyLimitMinutes?.let { " · $it min/day" } ?: "")
-            null -> "Limit reached"
-        }
+        reason = rule?.let { BlockEvaluator.evaluate(it, used, ZonedDateTime.now()) }
+        quotaMinutes = rule?.dailyLimitMinutes
+    }
+
+    // Formatted in composition, not in the effect, so the text comes from
+    // string resources like the rest of the UI.
+    val minutes = quotaMinutes
+    val reasonText = when (val r = reason) {
+        is BlockReason.Schedule ->
+            stringResource(R.string.block_reason_schedule, windowLabel(r.window))
+        is BlockReason.Quota ->
+            if (minutes != null) stringResource(R.string.block_reason_quota_limit, minutes)
+            else stringResource(R.string.block_reason_quota)
+        null -> stringResource(R.string.block_reason_fallback)
     }
 
     Scaffold(
@@ -155,7 +166,7 @@ private fun BlockScreen(
                 textAlign = TextAlign.Center
             )
             Spacer(Modifier.height(32.dp))
-            Button(onClick = onClose) { Text("Close app") }
+            Button(onClick = onClose) { Text(stringResource(R.string.action_close_app)) }
         }
     }
 }
