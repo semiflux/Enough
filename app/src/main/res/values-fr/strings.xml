@@ -1,0 +1,92 @@
+<resources>
+    <string name="app_name">Enough</string>
+
+    <!-- Accessibility service -->
+    <string name="accessibility_desc">Détecte l\'ouverture d\'une appli limitée pour qu\'Enough puisse la bloquer immédiatement.</string>
+
+    <!-- Notifications -->
+    <string name="monitor_title">Surveillance des limites d\'applis</string>
+    <string name="monitor_text">Enough vérifie les applis bloquées en arrière-plan.</string>
+    <string name="block_notif_text">Enough — touchez pour voir.</string>
+    <string name="reminder_notif_text">5 minutes restantes aujourd\'hui.</string>
+    <string name="channel_monitor_name">Surveillance Enough</string>
+    <string name="channel_block_name">Limites d\'applis</string>
+    <string name="channel_reminder_name">Rappels</string>
+
+    <!-- Titles -->
+    <string name="title_app_limit">Limite d\'appli</string>
+    <string name="title_choose_app">Choisir une appli</string>
+    <string name="search_apps">Rechercher des applis</string>
+
+    <!-- Actions -->
+    <string name="action_add_limit">Ajouter une limite</string>
+    <string name="action_allow">Autoriser</string>
+    <string name="action_open_settings">Ouvrir les paramètres</string>
+    <string name="action_back">Retour</string>
+    <string name="action_next">Suivant</string>
+    <string name="action_save">Enregistrer</string>
+    <string name="action_cancel">Annuler</string>
+    <string name="action_undo">Annuler</string>
+    <string name="action_delete">Supprimer</string>
+    <string name="action_remove">Supprimer</string>
+    <string name="action_remove_limit">Supprimer la limite</string>
+    <string name="action_add_blocked_time">Ajouter une plage bloquée</string>
+    <string name="action_edit_blocked_time">Modifier la plage bloquée</string>
+    <string name="action_remove_blocked_time">Supprimer la plage bloquée</string>
+    <string name="action_close_app">Fermer l\'appli</string>
+
+    <!-- Permission cards -->
+    <string name="perm_usage_title">Voir l\'utilisation des applis</string>
+    <string name="perm_usage_text">Enough a besoin de l\'accès à l\'utilisation pour mesurer le temps d\'écran.</string>
+    <string name="perm_notif_title">Prévenir quand une limite est atteinte</string>
+    <string name="perm_notif_text">Les notifications permettent à Enough d\'afficher l\'écran de blocage de façon fiable.</string>
+    <string name="perm_accessibility_title">Blocage instantané (facultatif)</string>
+    <string name="perm_accessibility_text">Activez le service d\'accessibilité pour un blocage immédiat. Sinon, les vérifications ont lieu toutes les quelques secondes.</string>
+    <string name="perm_battery_title">Rester actif (recommandé)</string>
+    <string name="perm_battery_text">Exemptez Enough de l\'optimisation de la batterie pour que la vérification en arrière-plan ne soit pas arrêtée sur certains téléphones.</string>
+    <string name="perm_overlay_title">Afficher par-dessus les autres applis</string>
+    <string name="perm_overlay_text">Permet à Enough d\'afficher l\'écran de blocage automatiquement. Sans cela, vous ne recevez qu\'une notification à toucher.</string>
+    <string name="perm_fullscreen_title">Les pop-ups demandent un réglage de plus</string>
+    <string name="perm_fullscreen_text">Android permet de désactiver les pop-ups plein écran automatiques par appli. S\'ils sont désactivés, vous ne recevez que la notification et devez la toucher. Activez-les pour Enough.</string>
+
+    <!-- Empty state -->
+    <string name="empty_title">Aucune limite pour l\'instant</string>
+    <string name="empty_body">Touchez Ajouter une limite et choisissez une appli.</string>
+    <string name="empty_body_usage">Autorisez l\'accès à l\'utilisation, puis ajoutez votre première limite.</string>
+
+    <!-- Limit rows -->
+    <string name="status_paused">En pause</string>
+    <string name="status_limit_reached">Limite atteinte</string>
+    <string name="status_remaining_of">Reste %1$s sur %2$s</string>
+    <string name="status_used_unlimited">%1$s / ∞</string>
+    <string name="status_blocked_window">Bloqué %1$s</string>
+    <string name="status_not_blocked">Non bloqué</string>
+    <string name="snackbar_limit_removed">Limite supprimée pour %1$s</string>
+
+    <!-- App detail -->
+    <string name="label_daily_limit">Limite quotidienne</string>
+    <string name="label_blocked_times">Plages bloquées</string>
+    <string name="blocked_times_hint">Aucune utilisation pendant ces plages.</string>
+    <string name="blocked_times_none">Aucune — par ex. ajoutez %1$s.</string>
+    <string name="daily_limit_summary">%1$s par jour · %2$s d\'utilisation</string>
+    <string name="daily_limit_none">Aucun quota quotidien — utilisez les plages bloquées ci-dessous, ou aucun.</string>
+    <string name="confirm_remove_title">Supprimer la limite&#160;?</string>
+    <string name="confirm_remove_text">%1$s ne sera plus limité.</string>
+    <string name="window_block_from">Bloquer à partir de</string>
+    <string name="window_block_until">Bloquer jusqu\'à</string>
+
+    <!-- Block screen -->
+    <string name="block_reason_schedule">En pause %1$s</string>
+    <string name="block_reason_quota">Limite quotidienne atteinte</string>
+    <string name="block_reason_quota_limit">Limite quotidienne atteinte · %1$d min/jour</string>
+    <string name="block_reason_fallback">Limite atteinte</string>
+
+    <!-- Formatting -->
+    <string name="duration_hm">%1$d h %2$d min</string>
+    <string name="duration_h">%1$d h</string>
+    <string name="duration_m">%1$d min</string>
+    <string name="time_hm">%1$d:%2$02d</string>
+    <string name="window_range">%1$s–%2$s</string>
+    <string name="unit_hours">heures</string>
+    <string name="unit_minutes">minutes</string>
+</resources>
